@@ -1,0 +1,32 @@
+# *- vim:syn=nginx -*
+
+server {
+	listen 80 default_server;
+	listen [::]:80 default_server;
+
+	root /var/www/html;
+
+	server_name _;
+	location /.well-known {
+		try_files $uri $uri/ =404;
+	}
+
+	location / {
+		return 301 https://$host$request_uri;
+	}
+
+	location ~ /\.ht {
+		deny all;
+	}
+}
+
+server {
+	listen 443 ssl default_server;
+	listen [::]:443 ssl default_server;
+	include snippets/snakeoil.conf;
+	
+	server_name _;
+	
+	return 444;
+}
+
